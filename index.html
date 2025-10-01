@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Para mi Mamamari – De tu nieto Jonathan</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cherry+Swash&family=Roboto:wght@300;500&display=swap');
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-size: 18px;
+      background: radial-gradient(circle at top left, #f3e5ab, #e0a899, #a7bca1);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      color: #5b4636;
+      text-align: center;
+    }
+    h1 {
+      font-family: 'Cherry Swash', cursive;
+      font-size: clamp(3rem, 6vw, 6rem);
+      margin-top: 40px;
+      animation: popIn 1s ease-out;
+    }
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .cake {
+      font-size: 6rem;
+      margin: 20px 0;
+      animation: spin 5s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .message {
+      font-size: 1.3rem;
+      margin: 20px auto;
+      max-width: 600px;
+      animation: fadeUp 2s ease-out forwards;
+      opacity: 0;
+    }
+    @keyframes fadeUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    .signature {
+      font-size: 1.1rem;
+      margin-top: 30px;
+      font-style: italic;
+      color: #7b5e57;
+      animation: fadeUp 2s ease-out 1s forwards;
+      opacity: 0;
+    }
+    /* Mini-quiz styles */
+    #quiz {
+      margin: 40px auto;
+      max-width: 400px;
+      animation: fadeUp 2s ease-out 1.5s forwards;
+      opacity: 0;
+    }
+    #quiz p {
+      font-weight: 500;
+      font-size: 1.3rem;
+      color: #5b4636;
+    }
+    .option {
+      margin: 10px 5px;
+      padding: 10px 20px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #E0C097;
+      color: #5b4636;
+      transition: transform .2s, background .3s;
+    }
+    .option:hover {
+      transform: scale(1.05);
+      background: #f1e2c1;
+    }
+    #quiz-result {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      min-height: 1.2em;
+    }
+    audio {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 200px;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Para mi Mamamari</h1>
+
+  <div class="cake">🎂</div>
+
+  <p class="message">
+    Cada momento a tu lado es un regalo.<br>
+    Gracias por tus abrazos, tus historias<br>
+    y ese amor incondicional que sólo tú sabes dar.
+  </p>
+
+  <p class="signature">
+    Con todo mi amor,<br>
+    de tu nieto, Jonathan ❤️
+  </p>
+
+  <!-- Mini-quiz interactivo -->
+  <div id="quiz">
+    <p>¿Soy tu nieto favorito?</p>
+    <button class="option" data-answer="sí">Sí</button>
+    <button class="option" data-answer="no">No</button>
+    <p id="quiz-result"></p>
+  </div>
+
+  <audio src="https://example.com/musica-fiesta.mp3" autoplay loop></audio>
+
+  <canvas id="confetti"></canvas>
+
+  <script>
+    // Confetti
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    const pieces = [];
+    function random(min, max) { return Math.random() * (max - min) + min; }
+
+    class Piece {
+      constructor() {
+        this.x = random(0, W);
+        this.y = random(-50, -10);
+        this.size = random(5, 12);
+        this.speed = random(2, 5);
+        this.angle = random(0, 2 * Math.PI);
+        this.spin = random(-0.1, 0.1);
+        this.color = `hsl(${random(0,360)}, 60%, 60%)`;
+      }
+      update() {
+        this.y += this.speed;
+        this.angle += this.spin;
+        if (this.y > H) this.y = random(-50, -10);
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+        ctx.restore();
+      }
+    }
+
+    function initConfetti() {
+      for (let i = 0; i < 150; i++) pieces.push(new Piece());
+    }
+    function render() {
+      ctx.clearRect(0,0,W,H);
+      pieces.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(render);
+    }
+    window.addEventListener('resize', () => {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    });
+    initConfetti();
+    render();
+
+    // Mini-quiz logic
+    document.querySelectorAll('.option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const answer = btn.getAttribute('data-answer');
+        const result = document.getElementById('quiz-result');
+
+        if (answer === 'sí') {
+          result.textContent = '¡Claro que sí! Siempre seré tu nieto favorito. 🎉';
+          result.style.color = '#2ecc71';
+          for (let i = 0; i < 50; i++) {
+            const c = new Piece();
+            c.x = random(0, W);
+            c.y = random(-50, -10);
+            pieces.push(c);
+          }
+        } else {
+          result.textContent = '¡Awww! Te quiero igual, Mamamari. 😊';
+          result.style.color = '#e74c3c';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
