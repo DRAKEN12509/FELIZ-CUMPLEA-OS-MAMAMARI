@@ -119,87 +119,34 @@
   </p>
 
   <!-- Mini-quiz interactivo -->
-  <div id="quiz">
-    <p>¿Soy tu nieto favorito?</p>
-    <button class="option" data-answer="sí">Sí</button>
-    <button class="option" data-answer="no">No</button>
-    <p id="quiz-result"></p>
-  </div>
+<div id="quiz">
+  <p>¿Soy tu nieto favorito?</p>
+  <button class="option" data-answer="yes1">¡Sí, claro!</button>
+  <button class="option" data-answer="yes2">Claro que sí</button>
+  <p id="quiz-result"></p>
+</div>
 
-  <audio src="https://example.com/musica-fiesta.mp3" autoplay loop></audio>
+<script>
+  // Lógica del mini-quiz
+  document.querySelectorAll('.option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const answer = btn.getAttribute('data-answer');
+      const result = document.getElementById('quiz-result');
 
-  <canvas id="confetti"></canvas>
-
-  <script>
-    // Confetti
-    const canvas = document.getElementById('confetti');
-    const ctx = canvas.getContext('2d');
-    let W = canvas.width = window.innerWidth;
-    let H = canvas.height = window.innerHeight;
-    const pieces = [];
-    function random(min, max) { return Math.random() * (max - min) + min; }
-
-    class Piece {
-      constructor() {
-        this.x = random(0, W);
-        this.y = random(-50, -10);
-        this.size = random(5, 12);
-        this.speed = random(2, 5);
-        this.angle = random(0, 2 * Math.PI);
-        this.spin = random(-0.1, 0.1);
-        this.color = `hsl(${random(0,360)}, 60%, 60%)`;
-      }
-      update() {
-        this.y += this.speed;
-        this.angle += this.spin;
-        if (this.y > H) this.y = random(-50, -10);
-      }
-      draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.angle);
-        ctx.fillStyle = this.color;
-        ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
-        ctx.restore();
-      }
-    }
-
-    function initConfetti() {
-      for (let i = 0; i < 150; i++) pieces.push(new Piece());
-    }
-    function render() {
-      ctx.clearRect(0,0,W,H);
-      pieces.forEach(p => { p.update(); p.draw(); });
-      requestAnimationFrame(render);
-    }
-    window.addEventListener('resize', () => {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    });
-    initConfetti();
-    render();
-
-    // Mini-quiz logic
-    document.querySelectorAll('.option').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const answer = btn.getAttribute('data-answer');
-        const result = document.getElementById('quiz-result');
-
-        if (answer === 'sí') {
-          result.textContent = '¡Claro que sí! Siempre seré tu nieto favorito. 🎉';
-          result.style.color = '#2ecc71';
-          for (let i = 0; i < 50; i++) {
-            const c = new Piece();
-            c.x = random(0, W);
-            c.y = random(-50, -10);
-            pieces.push(c);
-          }
-        } else {
-          result.textContent = '¡Awww! Te quiero igual, Mamamari. 😊';
-          result.style.color = '#e74c3c';
+      if (answer === 'yes1') {
+        result.textContent = '¡Claro que sí! Siempre seré tu nieto favorito. 🎉';
+        result.style.color = '#2ecc71';
+        // Extra confeti
+        for (let i = 0; i < 50; i++) {
+          const c = new Piece();
+          c.x = random(0, W);
+          c.y = random(-50, -10);
+          pieces.push(c);
         }
-      });
+      } else {
+        result.textContent = 'jaja esa nunca fue una opción. 😜';
+        result.style.color = '#e74c3c';
+      }
     });
-  </script>
-</body>
-</html>
+  });
+</script>
